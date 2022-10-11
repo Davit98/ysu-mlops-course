@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# testing requirements
+pytest==7.1.3
