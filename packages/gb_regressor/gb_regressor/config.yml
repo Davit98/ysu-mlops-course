@@ -1,3 +1,6 @@
+# Package Overview
+package_name: gb_regressor
+
 # Data Files
 training_data_file: houseprice.csv
 test_data_file: test.csv
@@ -37,7 +40,6 @@ numerical_vars:
   - LotArea
   - OverallQual
   - YearRemodAdd
-  - BsmtQual
   - BsmtFinSF1
   - TotalBsmtSF
   - FirstFlrSF

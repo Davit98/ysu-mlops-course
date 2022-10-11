@@ -17,6 +17,7 @@ class AppConfig(BaseModel):
     Application-level config.
     """
 
+    package_name: str
     pipeline_name: str
     pipeline_save_file: str
     training_data_file: str
