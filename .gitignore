@@ -133,3 +133,10 @@ dmypy.json
 
 # macOS
 .DS_Store
+
+# training data
+research_phase/*.csv
+packages/gb_regressor/gb_regressor/datasets/*.csv
+
+# train models
+packages/gb_regressor/gb_regressor/trained_models/*.pkl
