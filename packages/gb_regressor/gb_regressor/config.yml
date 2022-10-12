@@ -87,7 +87,8 @@ rare_label_tol: 0.01
 rare_label_n_categories: 5
 
 # loss function to be optimized
-loss: ls
+loss: squared_error
 allowed_loss_functions:
-  - ls
+  - squared_error
+  - absolute_error
   - huber
