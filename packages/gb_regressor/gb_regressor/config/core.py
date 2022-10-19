@@ -2,7 +2,7 @@ import typing as t
 from pathlib import Path
 
 from pydantic import BaseModel, validator
-from strictyaml import load, YAML
+from yaml import safe_load
 
 # Project Directories
 PARENT_DIR = Path(__file__).resolve().parent
@@ -74,27 +74,27 @@ def find_config_file() -> Path:
     raise Exception(f"Config not found at {CONFIG_FILE_PATH!r}")
 
 
-def fetch_config_from_yaml(cfg_path: Path = None) -> YAML:
+def fetch_config_from_yaml(cfg_path: Path = None) -> t.Dict:
     """Parse YAML containing the package configuration."""
     if not cfg_path:
         cfg_path = find_config_file()
 
     if cfg_path:
         with open(cfg_path, "r") as conf_file:
-            parsed_config = load(conf_file.read())
+            parsed_config = safe_load(conf_file.read())
             return parsed_config
     raise OSError(f"Did not find config file at path: {cfg_path}")
 
 
-def create_and_validate_config(parsed_config: YAML = None) -> Config:
+def create_and_validate_config(parsed_config: t.Optional[t.Dict] = None) -> Config:
     """Run validation on config values."""
     if parsed_config is None:
         parsed_config = fetch_config_from_yaml()
 
     # specify the data attribute from the strictyaml YAML type.
     _config = Config(
-        app_config=AppConfig(**parsed_config.data),
-        model_config=ModelConfig(**parsed_config.data),
+        app_config=AppConfig(**parsed_config),
+        model_config=ModelConfig(**parsed_config),
     )
 
     return _config
