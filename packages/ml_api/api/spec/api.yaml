@@ -1,23 +1,23 @@
-openapi: 3.0.0
+openapi: 3.0.0 # tells Connexion what version of the Open API is being used
 
-info:
-  title: Spec for House Price Prediction API
-  version: '1'
+info: # begins a new ‘scope’ of information about the API being built
+  title: Spec for House Price Prediction API # a user defined title included in the Connexion generated UI system
+  version: '1' # a user defined version value for the API
 
 servers:
 - url: http://{base}:5000/
-  description: API for performing house price predictions.
+  description: API for performing house price predictions. # a user defined description of what the API provides
   variables:
     base:
       default: 0.0.0.0
 
-paths:
-  /:
-    get:
-      operationId: api.controller.health
-      responses:
-        '200':
-          description: API Health Status
+paths: # defines the section of the configuration containing all of the API REST endpoints.
+  /: # defines one path of your URL endpoint.
+    get: # defines the HTTP method this URL endpoint will respond to
+      operationId: api.controller.health # defines Python import path/function that will respond to HTTP GET / request
+      responses: # defines the beginning of the expected response section.
+        '200': # defines the section for a successful response, HTTP status code 200
+          description: API Health Status # defines what the UI interface will display for implementation notes.
 
   /v1/predictions:
     post:
@@ -27,8 +27,8 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: array
+            schema: # defines the response as a schema, or structure.
+              type: array # defines the structure of the schema as an array.
               items:
                 $ref: '#/components/schemas/HouseDetails'
       responses:
