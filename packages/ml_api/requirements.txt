@@ -5,8 +5,3 @@ git+https://github.com/Davit98/gb_regressor.git
 flask>=1.1.1,<1.2.0
 connexion[swagger-ui]==2.14.1
 markupsafe==2.0.1 # https://github.com/aws/aws-sam-cli/issues/3661
-
-# repo maintenance tooling
-black>=19.10b0,<20.0
-flake8>=3.7.9,<4.0
-mypy>=0.740

@@ -11,10 +11,10 @@ def create_app(*, config_object: Config) -> connexion.App:
 
     connexion_app = connexion.App(
         __name__, debug=config_object.DEBUG, specification_dir="spec/"
-    )
+    )  # create the application instance
     flask_app = connexion_app.app
     flask_app.config.from_object(config_object)
-    connexion_app.add_api("api.yaml")
+    connexion_app.add_api("api.yaml")  # read the swagger.yml file to configure the endpoints
 
     _logger.info("Application instance created")
 
