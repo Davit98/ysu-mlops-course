@@ -1,5 +1,9 @@
-# ML Model (gradient boosting regressor)
+# ML model (gradient boosting regressor)
 git+https://github.com/Davit98/gb_regressor.git
+
+# Another ML model (lasso regressor) solving the same problem as our GB regressor
+# this is for differential testing purposes
+tid-regression-model==3.1.2
 
 # Web microframework for the API
 flask>=1.1.1,<1.2.0
