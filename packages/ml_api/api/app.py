@@ -2,6 +2,7 @@ import logging
 
 import connexion
 from api.config import Config
+from api.persistence.core import init_database
 
 _logger = logging.getLogger(__name__)
 
@@ -14,8 +15,11 @@ def create_app(*, config_object: Config) -> connexion.App:
     )  # create the application instance
     flask_app = connexion_app.app
     flask_app.config.from_object(config_object)
-    connexion_app.add_api("api.yaml")  # read the swagger.yml file to configure the endpoints
 
+    # Setup database
+    init_database(flask_app, config=config_object)
+
+    connexion_app.add_api("api.yaml")  # read the swagger.yml file to configure the endpoints
     _logger.info("Application instance created")
 
     return connexion_app
