@@ -6,13 +6,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy.ext.declarative import declarative_base
 
-from .models import (
-    LassoModelPredictions,
-    GradientBoostingModelPredictions,
-)
 
 _logger = logging.getLogger(__name__)
+
+# Base class for SQLAlchemy models
+Base = declarative_base()
 
 
 def create_db_engine_from_config(*, config: Config) -> Engine:
@@ -42,15 +42,14 @@ def create_db_session(*, engine: Engine) -> scoped_session:
     )
 
 
-def init_database(app: Flask, config: Config, db_session=None) -> None:
+def init_database(app: Flask, config: Config, db_session=None, base=None) -> None:
     """Connect to the database and attach DB session to the app."""
 
     if not db_session:
         engine = create_db_engine_from_config(config=config)
         db_session = create_db_session(engine=engine)
 
-        LassoModelPredictions.__table__.create(bind=engine, checkfirst=True)
-        GradientBoostingModelPredictions.__table__.create(bind=engine, checkfirst=True)
+        base.metadata.create_all(bind=engine)
 
     app.db_session = db_session  # attaching to Flask object's instance
 

@@ -1,12 +1,19 @@
 import json
 import logging
 
+import typing as t
 from flask import request, jsonify, Response, current_app
 from gb_regressor.predict import make_prediction
 
 from api.persistence.data_access import PredictionPersistence, ModelType
 
 _logger = logging.getLogger(__name__)
+
+
+class PredictionResult(t.NamedTuple):
+    errors: t.Any
+    predictions: t.List
+    model_version: str
 
 
 def health():
@@ -26,7 +33,7 @@ def predict():
         )
 
         # Step 2b: Get and save shadow predictions
-        shadow_result = persistence.make_save_predictions(
+        shadow_result = persistence.make_save_predictions(  # noqa
             db_model=ModelType.GRADIENT_BOOSTING, input_data=json_data
         )
 
@@ -59,15 +66,19 @@ def predict_alt():
             return Response(json.dumps(errors), status=400)
 
         # Step 4: Split out results
-        predictions = result.get("predictions")
+        predictions = result.get("predictions").tolist()
         version = result.get("version")
 
         # Step 5: Save predictions
         persistence = PredictionPersistence(db_session=current_app.db_session)
+        prediction_result = PredictionResult(
+            errors=errors,
+            predictions=predictions,
+            model_version=version,
+        )
         persistence.save_predictions(
             inputs=json_data,
-            model_version=version,
-            predictions=predictions,
+            prediction_result=prediction_result,
             db_model=ModelType.GRADIENT_BOOSTING,
         )
 

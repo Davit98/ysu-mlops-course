@@ -38,6 +38,18 @@ class TestingConfig(Config):
     TESTING = True
     LOGGING_LEVEL = logging.DEBUG
 
+    # DB config matches docker container
+    # TODO: add separate, test docker files
+    DB_USER = os.getenv("DB_USER", "davit")
+    DB_PASSWORD = os.getenv("DB_PASSWORD", "19dv009")
+    DB_PORT = os.getenv("DB_PORT", 7619)
+    DB_HOST = os.getenv("DB_HOST", "0.0.0.0")
+    DB_NAME = "ml_api"
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql+psycopg2://{DB_USER}:"
+        f"{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
+
 
 class ProductionConfig(Config):
     pass

@@ -1,11 +1,8 @@
 from sqlalchemy import Column, String, DateTime, Integer
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.sql import func
-from sqlalchemy.ext.declarative import declarative_base
 
-
-# Base class for SQLAlchemy models
-Base = declarative_base()
+from api.persistence.core import Base
 
 
 class LassoModelPredictions(Base):

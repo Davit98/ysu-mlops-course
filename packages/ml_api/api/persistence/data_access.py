@@ -3,7 +3,6 @@ import logging
 import typing as t
 from enum import Enum
 
-import numpy as np
 import pandas as pd
 from gb_regressor.predict import make_prediction as make_shadow_prediction
 from regression_model.predict import make_prediction as make_live_prediction
@@ -30,7 +29,7 @@ class ModelType(Enum):
 
 class PredictionResult(t.NamedTuple):
     errors: t.Any
-    predictions: np.array
+    predictions: t.Optional[t.List]
     model_version: str
 
 
@@ -41,7 +40,7 @@ MODEL_PREDICTION_MAP = {
 
 
 class PredictionPersistence:
-    def __init__(self, *, db_session: Session, user_id: str = None,) -> None:
+    def __init__(self, *, db_session: Session, user_id: t.Optional[str] = None,) -> None:
         self.db_session = db_session
         if not user_id:
             # in reality, here we would use something like a UUID for anonymous users
@@ -69,7 +68,7 @@ class PredictionPersistence:
 
         prediction_result = PredictionResult(
             errors=errors,
-            predictions=result.get("predictions").tolist() if not errors else None,
+            predictions=list(result.get("predictions")) if not errors else None,
             model_version=result.get("version"),
         )
 
