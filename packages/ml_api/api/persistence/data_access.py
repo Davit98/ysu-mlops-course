@@ -63,7 +63,7 @@ class PredictionPersistence:
         try:
             errors = result["errors"]
         except KeyError:
-            # regression model `make_prediction` does not include errors
+            # lasso model `make_prediction` does not include errors
             pass
 
         prediction_result = PredictionResult(
