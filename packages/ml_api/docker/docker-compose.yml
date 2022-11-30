@@ -17,7 +17,7 @@ services:
     command: bash -c "make run-service-development"
 
   db:
-    image: postgres:latest
+    image: postgres:15
     environment:
       POSTGRES_USER: davit
       POSTGRES_PASSWORD: 19dv009

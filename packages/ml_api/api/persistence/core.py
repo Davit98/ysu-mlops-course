@@ -5,6 +5,7 @@ from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy_utils import database_exists, create_database
 
 from .models import (
     LassoModelPredictions,
@@ -21,10 +22,12 @@ def create_db_engine_from_config(*, config: Config) -> Engine:
     application through a connection pool and a Dialect, which describes how to talk to
     a specific kind of database / DBAPI combination.
     """
+    db_uri = config.SQLALCHEMY_DATABASE_URI
+    if not database_exists(db_uri):
+        create_database(db_uri)
+    engine = create_engine(db_uri)
 
-    engine = create_engine(config.SQLALCHEMY_DATABASE_URI,)
-
-    _logger.info(f"creating DB conn with URI: {config.SQLALCHEMY_DATABASE_URI}")
+    _logger.info(f"creating DB conn with URI: {db_uri}")
     return engine
 
 

@@ -1,10 +1,12 @@
 import json
+import logging
 
 from flask import request, jsonify, Response, current_app
 from gb_regressor.predict import make_prediction
-from regression_model.predict import make_prediction as alt_make_prediction
 
 from api.persistence.data_access import PredictionPersistence, ModelType
+
+_logger = logging.getLogger(__name__)
 
 
 def health():
@@ -13,6 +15,37 @@ def health():
 
 
 def predict():
+    if request.method == "POST":
+        # Step 1: Extract POST data from request body as JSON
+        json_data = request.get_json()
+
+        # Step 2a: Get and save live model predictions
+        persistence = PredictionPersistence(db_session=current_app.db_session)
+        result = persistence.make_save_predictions(
+            db_model=ModelType.LASSO, input_data=json_data
+        )
+
+        # Step 2b: Get and save shadow predictions
+        shadow_result = persistence.make_save_predictions(
+            db_model=ModelType.GRADIENT_BOOSTING, input_data=json_data
+        )
+
+        # Step 3: Handle errors
+        if result.errors:
+            _logger.warning(f"errors during prediction: {result.errors}")
+            return Response(json.dumps(result.errors), status=400)
+
+        # Step 4: Prepare prediction response
+        return jsonify(
+            {
+                "predictions": result.predictions,
+                "version": result.model_version,
+                "errors": result.errors,
+            }
+        )
+
+
+def predict_alt():
     if request.method == "POST":
         # Step 1: Extract POST data from request body as JSON
         json_data = request.get_json()
@@ -26,7 +59,7 @@ def predict():
             return Response(json.dumps(errors), status=400)
 
         # Step 4: Split out results
-        predictions = result.get("predictions").tolist()
+        predictions = result.get("predictions")
         version = result.get("version")
 
         # Step 5: Save predictions
@@ -39,29 +72,6 @@ def predict():
         )
 
         # Step 6: Prepare prediction response
-        return jsonify(
-            {"predictions": predictions, "version": version, "errors": errors}
-        )
-
-
-def predict_alt():
-    if request.method == "POST":
-        # Step 1: Extract POST data from request body as JSON
-        json_data = request.get_json()
-
-        # Step 2: Access the model prediction function (also validates data)
-        result = alt_make_prediction(input_data=json_data)
-
-        # Step 3: Handle errors
-        errors = result.get("errors")
-        if errors:
-            return Response(json.dumps(errors), status=400)
-
-        # Step 4: Split out results
-        predictions = result.get("predictions")
-        version = result.get("version")
-
-        # Step 5: Prepare prediction response
         return jsonify(
             {"predictions": predictions, "version": version, "errors": errors}
         )
