@@ -5,7 +5,7 @@ services:
       context: ../
       dockerfile: docker_test/Dockerfile
     environment:
-      DB_HOST: db
+      DB_HOST: test_db
       DB_PORT: 5432
       DB_USER: test_davit
       DB_PASSWORD: ${DB_PASSWORD:-19dv009}
