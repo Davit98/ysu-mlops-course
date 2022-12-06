@@ -1,0 +1,1 @@
+Duplicate `.env.sample` as `.env` and replace example values.
