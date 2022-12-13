@@ -8,18 +8,30 @@ def index():
     return 'home'
 
 
-def foo():
-    foo = 1
-    for x in range(100000):
-        foo += x
+def cpu():
+    # for older machines, lower the range to prevent timeouts
+    for i in range(10**4):
+        i**i
 
-    return str(foo)
+    return 'cpu intensive operation complete'
+
+
+def memory():
+    d = {}
+    # for older machines, lower the range to prevent timeouts
+    for i in range(10**7):
+        i = str(i)
+        i += "xyz"
+        d[i] = i
+
+    return 'memory intensive operation complete'
 
 
 def create_app():
     main_app = Flask(__name__)
     main_app.add_url_rule('/', 'index', index)
-    main_app.add_url_rule('/foo', 'foo', foo)
+    main_app.add_url_rule('/cpu', 'cpu', cpu)
+    main_app.add_url_rule('/memory', 'memory', memory)
     setup_metrics(main_app)
 
     # Add prometheus wsgi middleware to route /metrics requests

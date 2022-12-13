@@ -3,15 +3,28 @@ services:
   webapp:
     build: .
     container_name: webapp
+    volumes:
+      - ./:/application
     expose:
       - 5000
     ports:
       - "5005:5000"
+
+  cadvisor: # see https://prometheus.io/docs/guides/cadvisor/
+    image: gcr.io/cadvisor/cadvisor:v0.46.0
+    container_name: cadvisor
     volumes:
-      - ./:/application
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8080:8080"
 
   prometheus:
     image: prom/prometheus
+    depends_on:
+      - cadvisor
     container_name: prometheus
     volumes:
       - ./config/prometheus/:/etc/prometheus/  # path on the host, relative to the compose file
@@ -27,13 +40,14 @@ services:
     image: grafana/grafana
     depends_on:
       - prometheus
-    ports:
-      - "3000:3000"
+    container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=foobar
       - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
 
 volumes:
     prometheus_data:
