@@ -6,10 +6,9 @@ services:
       dockerfile: docker_test/Dockerfile
     environment:
       DB_HOST: test_db
-      DB_PORT: 5432
-      DB_USER: test_davit
-      DB_PASSWORD: ${DB_PASSWORD:-19dv009}
-      DB_NAME: ml_api_test
+      DB_USER: $DB_USER
+      DB_PASSWORD: $DB_PASSWORD
+      DB_NAME: $DB_NAME
     depends_on:
       - test_db
     ports:
@@ -19,11 +18,11 @@ services:
   test_db:
     image: postgres:15
     environment:
-      POSTGRES_USER: test_davit
-      POSTGRES_PASSWORD: 19dv009
-      POSTGRES_DB: ml_api_test
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_NAME
     ports:
-      - "7618:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - my_db_data_test:/var/lib/postgresql/data
 

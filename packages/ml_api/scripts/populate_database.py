@@ -8,7 +8,7 @@ import requests
 from gb_regressor.config.core import config
 from gb_regressor.processing.data_management import load_dataset
 
-LOCAL_URL = f'http://{os.getenv("DB_HOST", "localhost")}:5001'
+LOCAL_URL = f'http://{os.getenv("DB_HOST")}:5001'
 HEADERS = {"Accept": "application/json", "Content-Type": "application/json"}
 
 LOT_AREA_MAP = {"min": 1470, "max": 56600}
