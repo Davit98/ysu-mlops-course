@@ -8,7 +8,7 @@ def index():
     return 'home'
 
 
-def cpu():
+def cpu():  # this is to mimic a spike in CPU
     # for older machines, lower the range to prevent timeouts
     for i in range(10**4):
         i**i
@@ -16,7 +16,7 @@ def cpu():
     return 'cpu intensive operation complete'
 
 
-def memory():
+def memory():  # this is to mimic a spike in memory usage
     d = {}
     # for older machines, lower the range to prevent timeouts
     for i in range(10**7):
